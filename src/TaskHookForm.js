@@ -26,6 +26,15 @@ export default function TaskHookForm({ kisiler, submitFn }) {
     //formu sıfırlar
     event.target.reset();
   };
+
+  const validatePeople = (value) => {
+    if (value.length < 1) {
+      return "Lütfen en az bir kişi seçin";
+    }
+    if (value.length > 3) {
+      return "En fazla 3 kişi seçebilirsiniz";
+    }
+  };
   return (
     <form className="taskForm" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-line">
@@ -37,10 +46,15 @@ export default function TaskHookForm({ kisiler, submitFn }) {
           id="title"
           name="title"
           type="text"
-          onChange={handleOthersChange}
-          value={formData.title}
+          {...register("title", {
+            required: "Task başlığı yazmalısınız",
+            minLength: {
+              value: 3,
+              message: "Task başlığı en az 3 karakter olmalı",
+            },
+          })}
         />
-        <p className="input-error">{formErrors.title}</p>
+        <p className="input-error">{errors.title?.message}</p>
       </div>
 
       <div className="form-line">
@@ -52,10 +66,15 @@ export default function TaskHookForm({ kisiler, submitFn }) {
           rows="3"
           id="description"
           name="description"
-          onChange={handleOthersChange}
-          value={formData.description}
+          {...register("description", {
+            required: "Task açıklaması yazmalısınız",
+            minLength: {
+              value: 10,
+              message: "Task açıklaması en az 10 karakter olmalı",
+            },
+          })}
         ></textarea>
-        <p className="input-error">{formErrors.description}</p>
+        <p className="input-error">{errors.description?.message}</p>
       </div>
 
       <div className="form-line">
@@ -67,22 +86,19 @@ export default function TaskHookForm({ kisiler, submitFn }) {
                 type="checkbox"
                 name="people"
                 value={p}
-                onChange={handleCheckboxChange}
-                checked={formData.people.includes(p)}
+                {...register("people", {
+                  validate: validatePeople,
+                })}
               />
               {p}
             </label>
           ))}
         </div>
-        <p className="input-error">{formErrors.people}</p>
+        <p className="input-error">{errors.people?.message}</p>
       </div>
 
       <div className="form-line">
-        <button
-          className="submit-button"
-          type="submit"
-          disabled={buttonDisabled}
-        >
+        <button className="submit-button" type="submit" disabled={!isValid}>
           Kaydet
         </button>
       </div>
