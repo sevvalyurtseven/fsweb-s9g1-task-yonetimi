@@ -31,6 +31,15 @@ function App() {
     });
     setTasks(updatedTasks);
     toast.success(`Task ${id} tamamlandı`);
+
+    const tasksToDo = updatedTasks.filter(
+      (item) => item.status === "yapılacak"
+    );
+    if (tasksToDo.length === 0) {
+      toast.success("Tebrikler tüm taskları tamamladınız", {
+        theme: "colored",
+      });
+    }
   }
 
   return (
